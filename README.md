@@ -22,15 +22,27 @@ contract as a code project and export it to a YAML document.
 3. **Declare the Contract KCL Code**: author the contract as small, reusable typed KCL sources.
 4. **Parse and Export to YAML**: validate, print, and export the contract to YAML or JSON.
 
+## Requirements
+
+- [KCL Language CLI](https://www.kcl-lang.io/docs/user_docs/getting-started/install) `>= 0.12.7`
+- [`just` Command Runner](https://github.com/casey/just).
+
+Check both are on your `PATH`:
+
+```bash
+kcl --version
+just --version
+```
+
 ## ODCS Tutorial Commands
 
 Common tasks are wrapped in the [`Justfile`](Justfile):
 
 ```bash
 just init      # sync library module dependencies
-just export      # kcl vet the contract + fixtures against the schemas
-just fmt      # regenerate docs/library/odcs.md from the schema docstrings
-just lint 
+just export    # exports the KCL contract.k to contract.yaml 
+just fmt       # formats every `.k` file in the project
+just lint      # Runs `kcl lint` against the root contract and every project directory
 ```
 
 ---
