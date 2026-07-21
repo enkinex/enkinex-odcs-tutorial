@@ -17,7 +17,7 @@ contract as a code project and export it to a YAML document.
 **What you are going to learn:**
 
 1. **Installing KCL**: set up the KCL CLI on your machine.
-2. **Creating the Contract Project Module**: initialize a KCL module, depend on `enkinex-odcs`, and lay out a modular
+2. **Creating the Contract Project Module**: initialize a KCL module, depend on [enkinex-odcs](https://github.com/enkinex/enkinex-odcs/tree/v3.1.0), and lay out a modular
    project.
 3. **Declare the Contract KCL Code**: author the contract as small, reusable typed KCL sources.
 4. **Parse and Export to YAML**: validate, print, and export the contract to YAML or JSON.
@@ -49,6 +49,7 @@ just lint      # Runs `kcl lint` against the root contract and every project dir
 
 ## External References and Resources
 
+- **[Enkinex ODCS Library v.3.1.0](https://github.com/enkinex/enkinex-odcs/tree/v3.1.0)**: The governance as code library for ODCS. 
 - **Open Data Contract Standard (ODCS) v3.1.0**: the
   standard [GitHub project](https://github.com/bitol-io/open-data-contract-standard/tree/v3.1.0).
     - Standard JSON Schema: [`odcs-json-schema-v3.1.0.json`](odcs-json-schema-v3.1.0.json)
