@@ -4,7 +4,7 @@
 
 [![Standard](https://img.shields.io/badge/ODCS-v3.1.0-blue)](https://github.com/bitol-io/open-data-contract-standard/tree/v3.1.0)
 [![KCL](https://img.shields.io/badge/KCL-%E2%89%A5%200.12.7-7B68EE)](https://www.kcl-lang.io/)
-[![Version](https://img.shields.io/badge/version-v3.1.0--rc1-orange)](./CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-v3.1.0-green)](./CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green)](./LICENSE)
 
 ---
@@ -52,7 +52,7 @@ just lint      # Runs `kcl lint` against the root contract and every project dir
 - **[Enkinex ODCS Library v.3.1.0](https://github.com/enkinex/enkinex-odcs/tree/v3.1.0)**: The governance as code library for ODCS. 
 - **Open Data Contract Standard (ODCS) v3.1.0**: the
   standard [GitHub project](https://github.com/bitol-io/open-data-contract-standard/tree/v3.1.0).
-    - Standard JSON Schema: [`odcs-json-schema-v3.1.0.json`](odcs-json-schema-v3.1.0.json)
+    - Standard JSON Schema: [`odcs-json-schema-v3.1.0.json`](https://github.com/enkinex/enkinex-odcs/blob/v3.1.0/odcs-json-schema-v3.1.0.json)
 - **[KCL Language](https://www.kcl-lang.io/)**: the configuration & policy DSL used for the
   implementation.
 
@@ -67,4 +67,4 @@ contributor list in [AUTHORS.md](AUTHORS.md).
 
 ## License
 
-Licensed under the terms in [LICENSE](LICENSE).
+Licensed under the Apache License 2.0 — see [LICENSE](LICENSE).

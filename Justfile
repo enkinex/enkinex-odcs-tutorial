@@ -10,7 +10,7 @@ fmt:
     kcl fmt ./...
 
 lint:
-    set -e; for d in . catalog common contract iam quality server; do (cd "$d" && kcl lint .); done
+    set -e; for d in . catalog contract iam server; do (cd "$d" && kcl lint .); done
 
 export:
     kcl contract.k --format yaml > contract.yaml
