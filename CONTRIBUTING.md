@@ -1,7 +1,8 @@
-# Contributing to Enkinex ODCS
+# Contributing to the Enkinex ODCS Tutorial
 
-Thank you for your interest in contributing to **Enkinex ODCS**, the [KCL](https://www.kcl-lang.io/) Library for the
-[Open Data Contract Standard (ODCS)](https://github.com/bitol-io/open-data-contract-standard). This guide covers
+Thank you for your interest in contributing to the **Enkinex ODCS Tutorial**, the companion sample project for the
+[Enkinex ODCS Library](https://github.com/enkinex/enkinex-odcs) — a [KCL](https://www.kcl-lang.io/) implementation of
+the [Open Data Contract Standard (ODCS)](https://github.com/bitol-io/open-data-contract-standard). This guide covers
 everything you need to build, validate, and submit changes.
 
 ## Prerequisites
@@ -19,10 +20,10 @@ just --version
 ## Getting Started
 
 ```bash
-git clone git@github.com:enkinex/enkinex-odcs.git
-cd enkinex-odcs
+git clone git@github.com:enkinex/enkinex-odcs-tutorial.git
+cd enkinex-odcs-tutorial
 just init      # kcl mod update
-just check     # fmt + lint + test, the same gate CI/reviewers expect
+just export    # compiles contract.k and writes contract.yaml
 ```
 
 Run `just` with no arguments at any point to list every available task.
@@ -31,90 +32,73 @@ Run `just` with no arguments at any point to list every available task.
 
 All day-to-day tasks are `just` recipes defined in the [`Justfile`](Justfile):
 
-| Command      | What it does                                                                                                                                   |
-|--------------|------------------------------------------------------------------------------------------------------------------------------------------------|
-| `just init`  | Syncs module dependencies (`kcl mod update`).                                                                                                  |
-| `just fmt`   | Formats every `.k` file in the project (`kcl fmt ./...`).                                                                                      |
-| `just lint`  | Runs `kcl lint` against the root package and every module directory.                                                                           |
-| `just test`  | Validates every fixture under [`test/`](test) against `odcs.k` with `kcl vet`, failing loudly on the first error.                              |
-| `just docs`  | Regenerates the auto-generated schema reference from schema docstrings.                                                                        |
-| `just check` | Aggregate gate: formats, verifies the tree is still clean (`git diff --exit-code`), then runs `lint` and `test`. Run this before opening a PR. |
+| Command       | What it does                                                             |
+|---------------|--------------------------------------------------------------------------|
+| `just init`   | Syncs module dependencies (`kcl mod update`).                            |
+| `just fmt`    | Formats every `.k` file in the project (`kcl fmt ./...`).                |
+| `just lint`   | Runs `kcl lint` against the root contract and every project directory.   |
+| `just export` | Compiles `contract.k` and exports the contract to `contract.yaml`.       |
 
 Before pushing, always run:
 
 ```bash
 just fmt
-just check
+just lint
+just export
 ```
 
-`just check` re-runs `kcl fmt` and fails if it changes anything you haven't committed — so always run `just fmt` and
-commit the result first, rather than letting `check` catch it for you.
+`just export` must succeed with no errors, and the regenerated `contract.yaml` should be committed together with any
+`.k` change that affects it.
+
+## Project layout
+
+The tutorial implements the official ODCS **full example** contract as a modular KCL project on top of the
+`enkinex-odcs` schema library:
+
+| Path          | Contains                                                                     |
+|---------------|-------------------------------------------------------------------------------|
+| `contract.k`  | The root `DataContract` instance that assembles every part below.            |
+| `catalog/`    | The schema objects (tables) and their properties.                            |
+| `contract/`   | Description, pricing, SLA, support, and authoritative-definition instances.  |
+| `iam/`        | Roles, team, and team members.                                               |
+| `server/`     | Server definitions (PostgreSQL).                                             |
+
+The contract content deliberately mirrors the upstream
+[ODCS full example](https://github.com/bitol-io/open-data-contract-standard/blob/main/docs/examples/all/full-example.odcs.yaml),
+so changes should track either that example or a new `enkinex-odcs` library release — not diverge from both.
 
 ## Branch and commit conventions
 
 Commit messages in this repo follow a **Conventional Commits** subset. Use one of these prefixes based on what the
 commit actually changes:
 
-- `feat:` — a new schema, field, or capability
-- `fix:` — a correctness fix (typing, constraints, validation behavior)
-- `docs:` — documentation-only changes (README, schema docs, docstrings)
-- `test:` — adding or updating `test/` fixtures
+- `feat:` — new tutorial content or contract sections
+- `fix:` — a correctness fix (typing, constraints, export behavior)
+- `docs:` — documentation-only changes
 - `refactor:` — restructuring without behavior change
 - `chore:` — tooling, dependency, or repo-scaffolding changes
 
-Keep the subject line short and imperative (e.g. `fix: reject invalid status
-values`), matching the existing `git log`.
-
-Branch names follow `<type>/<short-slug>`, using the same prefixes as above, e.g. `feat/output-port-retry-policy` or
-`chore/contributor-tooling`.
+Keep the subject line short and imperative, matching the existing `git log`. Branch names follow `<type>/<short-slug>`,
+e.g. `docs/quality-section` or `chore/bump-library`.
 
 ## Pull request process
 
 1. Fork the repo (or branch directly if you're a collaborator) and open your PR against `main`.
-2. Fill in the [PR template](.github/PULL_REQUEST_TEMPLATE.md) — in particular the **Testing** section: paste the output
-   of `just check`.
-3. Make sure CI (or your local `just check`) is green before requesting review.
-4. A maintainer listed in [`.github/CODEOWNERS`](.github/CODEOWNERS) will review; address feedback with follow-up
-   commits rather than force-pushes once a review is in progress, unless asked otherwise.
-5. PRs are squash-merged, so the PR title should itself read as a good commit message.
-
-## Where to add a new schema
-
-The library is organized as one KCL module per section of related ODCS definitions, mirroring the standard JSON schema
-`$defs` section. If you're adding a new field or schema, find its home in this table (see the root `README.md` for the
-full rationale behind each module):
-
-| Module                | Owns                                                                                                                     |
-|-----------------------|--------------------------------------------------------------------------------------------------------------------------|
-| **`common`**          | `AuthoritativeDefinition`, `CustomProperty`, `StableId`, `tags`                                                          |
-| **`catalog`**         | `SchemaElement`, `SchemaObject`, `SchemaProperty`, `RelationshipSchemaLevel`, `RelationshipPropertyLevel`, `TypeOptions` |
-| **`contract`**        | `Description`, `Pricing`, `ServiceLevelAgreement`, `Support`                                                             |
-| **`iam`**             | `Role`, `Team`, `TeamMember`                                                                                             |
-| **`quality`**         | `DataQuality`, `DataQualityOperators`                                                                                    |
-| **`server`**          | `BaseServer`, `CustomServer`,  `Server`, and subschemas (`BigQueryServer`, `PostgresServer`, …)                          |
-| **`odcs.k`** *(root)* | The root **`DataContract`** schema that composes every module above                                                      |
-
-Add a fixture under [`test/`](test) that exercises any new or changed field (either extend `full-standard.odcs.yaml` or
-add to the relevant `module-*.odcs.yaml` file), and run `just test` to confirm it validates.
-
-## Docstrings and generated docs
-
-Every schema and field should carry a docstring — it's the source of the generated schema reference and the primary way
-contributors discover the API. When you add or change a docstring:
-
-1. Run `just docs` to regenerate the schema reference.
-2. Include the regenerated file in your PR.
-3. If your change affects the architectural rationale for a module, also update the corresponding file under [
-   `docs/schemas/`](docs/schemas).
+2. Describe what changed and paste the output of `just export` (or note that `contract.yaml` is unchanged).
+3. A maintainer will review; address feedback with follow-up commits rather than force-pushes once a review is in
+   progress, unless asked otherwise.
+4. PRs are squash-merged, so the PR title should itself read as a good commit message.
 
 ## Code of conduct and security
 
-- This project follows the [Code of Conduct](CODE_OF_CONDUCT.md).
-- To report a security vulnerability, see [`SECURITY.md`](SECURITY.md) — please do not open a public issue for security
-  reports.
+- This project follows the
+  [Enkinex Code of Conduct](https://github.com/enkinex/enkinex-odcs/blob/main/CODE_OF_CONDUCT.md).
+- To report a security vulnerability, see the
+  [Enkinex security policy](https://github.com/enkinex/enkinex-odcs/blob/main/SECURITY.md) — please do not open a
+  public issue for security reports.
 
 ## Other references
 
 - [`AUTHORS.md`](AUTHORS.md) — contributor list.
 - [`CHANGELOG.md`](CHANGELOG.md) — notable changes per release.
-- [`history.md`](history.md) — which standard ODCS version this library tracks.
+- [`history.md`](history.md) — which Enkinex ODCS library version this tutorial tracks.
