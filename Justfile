@@ -15,3 +15,14 @@ lint:
 export:
     kcl contract.k --format yaml > contract.yaml
 
+
+# The gate that matters for a tutorial: it still builds against the library
+# version it pins, and the exported document committed here is what that
+# build actually produces. A stale contract.yaml means the tutorial teaches
+# something the library no longer does.
+check:
+    kcl fmt ./...
+    git diff --exit-code -- '*.k' || (echo "Code is not formatted — run 'just fmt' and commit the result." && exit 1)
+    just lint
+    just export
+    git diff --exit-code -- contract.yaml || (echo "contract.yaml is stale — run 'just export' and commit the result." && exit 1)
