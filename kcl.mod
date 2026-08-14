@@ -1,6 +1,6 @@
 [package]
 name = "enkinex-odcs-tutorial"
-edition = "0.12.7"
+edition = "0.12.8"
 version = "3.1.0"
 description = "Enkinex ODCS Tutorial"
 
